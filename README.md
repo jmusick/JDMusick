@@ -13,8 +13,8 @@ The site takes its palette and texture from the album artwork: blackened wood, w
 - Spotify and Apple Music album links are live.
 - Social profile links remain hidden until their correct URLs are recorded in `src/config/site.ts`.
 - The released Spotify album is the source of truth for the track order and displayed timings in `src/data/album.ts`.
-- The Turnstile production site key and server secret still need to be created for `jdmusick.band`.
-- Cloudflare Email Sending must be onboarded for `jdmusick.band`, with the API token and form destination stored as Pages secrets.
+- Turnstile protects the production contact form with the `contact` action and an exact hostname check.
+- Cloudflare Email Sending delivers form submissions to `StoneDragonMedia@gmail.com`.
 
 ## Development
 
@@ -53,14 +53,16 @@ Production configuration:
 | --- | --- | --- |
 | `wrangler.toml` `[vars]` | Plaintext | `CLOUDFLARE_ACCOUNT_ID` |
 | Pages project secret | Encrypted | `CLOUDFLARE_API_TOKEN` |
-| Pages project secret | Encrypted | `TURNSTILE_SECRET_KEY` |
+| Pages project secret | Encrypted | `TURNSTILE_SECRET` |
+| Pages project variable | Plaintext | `TURNSTILE_HOSTNAMES` |
+| Pages project variable | Plaintext | `CONTACT_TO_EMAIL` |
 
 The API token needs `Email Sending: Edit` permission for the account. The
-Function defaults to `contact@jdmusick.band` as its verified sender and
-destination; `EMAIL_FROM_CONTACT` and
-`CONTACT_TO_EMAIL` can override those at runtime.
+Function defaults to `contact@jdmusick.band` as its verified sender. Production
+uses `StoneDragonMedia@gmail.com` as the destination through
+`CONTACT_TO_EMAIL`; `EMAIL_FROM_CONTACT` can override the sender at runtime.
 
 Provide the public Turnstile site key at build time as `PUBLIC_TURNSTILE_SITE_KEY`.
-Store `TURNSTILE_SECRET_KEY` and `CLOUDFLARE_API_TOKEN` only as encrypted Pages
+Store `TURNSTILE_SECRET` and `CLOUDFLARE_API_TOKEN` only as encrypted Pages
 secrets. Copy `.dev.vars.example` to `.dev.vars` for local Function testing;
 never commit the populated file.

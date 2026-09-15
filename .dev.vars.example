@@ -10,8 +10,9 @@ CLOUDFLARE_ACCOUNT_ID=fdabb6996edf7688fdaf7c8c367f7d08
 EMAIL_FROM_CONTACT=contact@jdmusick.band
 
 # The inbox that receives form messages.
-CONTACT_TO_EMAIL=contact@jdmusick.band
+CONTACT_TO_EMAIL=StoneDragonMedia@gmail.com
 
 # Server-side secret for the Turnstile widget whose public key is provided at
 # build time through PUBLIC_TURNSTILE_SITE_KEY.
-TURNSTILE_SECRET_KEY=
+TURNSTILE_SECRET=
+TURNSTILE_HOSTNAMES=localhost,127.0.0.1

@@ -12,7 +12,8 @@ interface Env {
 	CLOUDFLARE_ACCOUNT_ID?: string;
 	EMAIL_FROM_CONTACT?: string;
 	CONTACT_TO_EMAIL?: string;
-	TURNSTILE_SECRET_KEY?: string;
+	TURNSTILE_SECRET?: string;
+	TURNSTILE_HOSTNAMES?: string;
 }
 
 interface ContactPayload {
@@ -36,6 +37,8 @@ const LIMITS = {
 const DEFAULT_FROM = "contact@jdmusick.band";
 /** Destination inbox — keep in step with CONTACT_EMAIL in src/config/site.ts. */
 const DEFAULT_TO = "contact@jdmusick.band";
+const TURNSTILE_ACTION = "contact";
+const DEFAULT_TURNSTILE_HOSTNAMES = ["jdmusick.band"];
 
 const json = (payload: Record<string, unknown>, status = 200): Response =>
 	new Response(JSON.stringify(payload), {
@@ -66,7 +69,7 @@ const verifyTurnstile = async (
 	env: Env,
 	token: string,
 ): Promise<{ ok: true } | { ok: false; status: number; error: string; code?: string }> => {
-	if (!env.TURNSTILE_SECRET_KEY) {
+	if (!env.TURNSTILE_SECRET) {
 		return {
 			ok: false,
 			status: 503,
@@ -75,12 +78,12 @@ const verifyTurnstile = async (
 		};
 	}
 
-	if (!token) {
+	if (!token || token.length > 2048) {
 		return { ok: false, status: 400, error: "Please complete the verification challenge." };
 	}
 
 	const body = new URLSearchParams({
-		secret: env.TURNSTILE_SECRET_KEY,
+		secret: env.TURNSTILE_SECRET,
 		response: token,
 	});
 	const remoteIp = request.headers.get("CF-Connecting-IP");
@@ -91,10 +94,28 @@ const verifyTurnstile = async (
 			method: "POST",
 			headers: { "Content-Type": "application/x-www-form-urlencoded" },
 			body: body.toString(),
+			signal: AbortSignal.timeout(10_000),
 		});
-		const data = (await response.json()) as { success?: boolean };
+		if (!response.ok) {
+			return { ok: false, status: 502, error: "Could not reach the verification service." };
+		}
 
-		return data?.success
+		const data = (await response.json()) as {
+			success?: boolean;
+			action?: string;
+			hostname?: string;
+		};
+		const allowedHostnames = (env.TURNSTILE_HOSTNAMES || DEFAULT_TURNSTILE_HOSTNAMES.join(","))
+			.split(",")
+			.map((hostname) => hostname.trim().toLowerCase())
+			.filter(Boolean);
+		const valid =
+			data.success === true &&
+			data.action === TURNSTILE_ACTION &&
+			typeof data.hostname === "string" &&
+			allowedHostnames.includes(data.hostname.toLowerCase());
+
+		return valid
 			? { ok: true }
 			: { ok: false, status: 400, error: "Verification failed. Please try again." };
 	} catch {
