@@ -52,10 +52,12 @@ Production configuration:
 | Location | Type | Name |
 | --- | --- | --- |
 | `wrangler.toml` `[vars]` | Plaintext | `CLOUDFLARE_ACCOUNT_ID` |
+| `wrangler.toml` `[vars]` | Plaintext | `EMAIL_FROM_CONTACT` |
+| `wrangler.toml` `[vars]` | Plaintext | `CONTACT_TO_EMAIL` |
+| `wrangler.toml` `[vars]` | Plaintext | `TURNSTILE_HOSTNAMES` |
+| `wrangler.toml` `[vars]` | Plaintext | `PUBLIC_TURNSTILE_SITE_KEY` |
 | Pages project secret | Encrypted | `CLOUDFLARE_API_TOKEN` |
 | Pages project secret | Encrypted | `TURNSTILE_SECRET` |
-| Pages project variable | Plaintext | `TURNSTILE_HOSTNAMES` |
-| Pages project variable | Plaintext | `CONTACT_TO_EMAIL` |
 
 The API token needs `Email Sending: Edit` permission for the account. The
 Function defaults to `contact@jdmusick.band` as its verified sender. Production

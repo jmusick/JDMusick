@@ -7,3 +7,7 @@ compatibility_date = "2026-09-15"
 # dashboard or are set with `wrangler pages secret put NAME`.
 [vars]
 CLOUDFLARE_ACCOUNT_ID = "fdabb6996edf7688fdaf7c8c367f7d08"
+EMAIL_FROM_CONTACT = "contact@jdmusick.band"
+CONTACT_TO_EMAIL = "StoneDragonMedia@gmail.com"
+TURNSTILE_HOSTNAMES = "jdmusick.band"
+PUBLIC_TURNSTILE_SITE_KEY = "0x4AAAAAAE2nkWqLS-ID_LUE"

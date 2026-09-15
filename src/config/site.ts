@@ -20,7 +20,7 @@ export const SITE_TAGLINE = "Electric blues, soul, and stories that stay after l
  * override for another deployment.
  */
 export const TURNSTILE_SITE_KEY: string =
-	import.meta.env.PUBLIC_TURNSTILE_SITE_KEY ?? "";
+	import.meta.env.PUBLIC_TURNSTILE_SITE_KEY ?? "0x4AAAAAAE2nkWqLS-ID_LUE";
 
 /**
  * Social and streaming profiles.
