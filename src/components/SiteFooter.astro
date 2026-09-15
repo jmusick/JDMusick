@@ -1,0 +1,31 @@
+---
+import { Icon } from "astro-icon/components";
+import { ACTIVE_SOCIALS, SITE_NAME, SITE_VERSION } from "../config/site";
+
+const year = new Date().getFullYear();
+---
+
+<footer class="site-footer">
+	<span class="footer-mark">{SITE_NAME}</span>
+
+	{ACTIVE_SOCIALS.length > 0 && (
+		<nav class="social-nav" aria-label="Social media">
+			{ACTIVE_SOCIALS.map((s) => (
+				<a
+					href={s.href}
+					target="_blank"
+					rel="noopener noreferrer"
+					aria-label={s.label}
+					class="social-link"
+				>
+					<Icon name={s.icon} aria-hidden="true" />
+				</a>
+			))}
+		</nav>
+	)}
+
+	<div class="footer-legal">
+		<span>© {year} {SITE_NAME} · v{SITE_VERSION} · <a href="/privacy-policy/">Privacy Policy</a></span>
+		<span class="footer-credit">Site design by <a href="https://stonedragonmedia.com/" target="_blank" rel="noopener noreferrer">Stone Dragon Media, LLC</a></span>
+	</div>
+</footer>

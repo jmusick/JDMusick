@@ -1,0 +1,9 @@
+# Must match the existing Cloudflare Pages project exactly.
+name = "jdmusick"
+pages_build_output_dir = "dist"
+compatibility_date = "2026-09-15"
+
+# Plaintext Function configuration belongs here. Secrets stay in the Pages
+# dashboard or are set with `wrangler pages secret put NAME`.
+[vars]
+CLOUDFLARE_ACCOUNT_ID = "fdabb6996edf7688fdaf7c8c367f7d08"

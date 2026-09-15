@@ -1,0 +1,97 @@
+---
+import { Image } from "astro:assets";
+import Layout from "../layouts/Layout.astro";
+import cover from "../assets/the-road-still-knows-cover.png";
+import { ALBUM, ALBUM_RUNTIME, TRACK_COUNT } from "../data/album";
+import { SITE_NAME, SITE_TAGLINE, SITE_URL } from "../config/site";
+
+const canonicalUrl = `${SITE_URL}/`;
+
+const structuredData = {
+	"@context": "https://schema.org",
+	"@type": "MusicGroup",
+	name: SITE_NAME,
+	url: SITE_URL,
+	genre: ["Electric blues", "Soul blues"],
+	description: SITE_TAGLINE,
+	album: {
+		"@type": "MusicAlbum",
+		name: ALBUM.title,
+		numTracks: TRACK_COUNT,
+		byArtist: { "@type": "MusicGroup", name: SITE_NAME },
+	},
+};
+
+const spotifyAlbumId = ALBUM.spotifyUrl.match(/open\.spotify\.com\/album\/([A-Za-z0-9]+)/)?.[1];
+const spotifyEmbedUrl = `https://open.spotify.com/embed/album/${spotifyAlbumId}?utm_source=generator&theme=0`;
+const spotifyEmbedHeight = Math.min(760, Math.max(352, 170 + ALBUM.tracks.length * 34));
+---
+
+<Layout
+	title={`${SITE_NAME} — ${ALBUM.title}`}
+	description={ALBUM.blurb}
+	canonicalUrl={canonicalUrl}
+	structuredData={structuredData}
+	active="home"
+>
+	<section class="hero">
+		<Image class="hero-art" src={cover} alt="" widths={[900, 1600]} loading="eager" />
+		<div class="hero-scrim" aria-hidden="true"></div>
+
+		<div class="hero-inner">
+			<span class="badge badge-filled">Debut {ALBUM.kind} · {ALBUM.status}</span>
+			<h1 class="hero-title">{ALBUM.title}</h1>
+			<p class="hero-sub">{ALBUM.blurb}</p>
+			<div class="hero-cta">
+				<a class="btn btn-primary btn-lg" href={ALBUM.spotifyUrl} target="_blank" rel="noopener noreferrer">Listen on Spotify</a>
+				<a class="btn btn-secondary btn-lg" href="/music/">Explore the record</a>
+			</div>
+		</div>
+	</section>
+
+	<div class="page">
+		<section>
+			<p class="eyebrow">After hours</p>
+			<h2>{TRACK_COUNT} songs · {ALBUM_RUNTIME} of electric blues and soul</h2>
+			<p class="lede" style="margin-top: var(--space-4)">{SITE_TAGLINE}</p>
+		</section>
+
+		<section class="section">
+			<p class="eyebrow">Listen now</p>
+			<div class="spotify-embed" style={`height: ${spotifyEmbedHeight}px`}>
+				<iframe
+					src={spotifyEmbedUrl}
+					width="100%"
+					height={spotifyEmbedHeight}
+					frameborder="0"
+					allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+					loading="lazy"
+					title={`${ALBUM.title} on Spotify`}
+				></iframe>
+			</div>
+		</section>
+	</div>
+</Layout>
+
+<style>
+	.page {
+		padding-bottom: var(--space-7);
+	}
+
+	.section {
+		margin-top: var(--space-6);
+	}
+
+	.spotify-embed {
+		margin-top: var(--space-5);
+		border: 1px solid var(--border-hairline);
+		border-radius: 0.5rem;
+		overflow: hidden;
+		background: var(--bg-surface);
+	}
+
+	.spotify-embed iframe {
+		display: block;
+		border: 0;
+	}
+</style>

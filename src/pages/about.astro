@@ -1,0 +1,73 @@
+---
+import Layout from "../layouts/Layout.astro";
+import { ALBUM, TRACK_COUNT } from "../data/album";
+import { ACTIVE_SOCIALS, SITE_NAME, SITE_URL } from "../config/site";
+
+const canonicalUrl = `${SITE_URL}/about/`;
+
+/**
+ * Placeholder bio — written in third person per the design system's voice
+ * guidance, but not approved copy. Replace before launch.
+ */
+const bio = [
+	`${SITE_NAME} makes smoky electric blues and soul built for the hour when the room gets quiet enough for the truth to come out.`,
+	`The songs begin with people, not mythology: a man holding onto a matchbook, a bar nearing last call, a pair of Sunday shoes that cannot hide what happened at home. Guitar and Hammond organ carry the weight while a weathered voice keeps the story close.`,
+	`The debut album, ${ALBUM.title}, gathers ${TRACK_COUNT} songs about regret, self-reckoning, reassurance, and the kind of love that arrives after you have stopped expecting it.`,
+];
+
+const structuredData = {
+	"@context": "https://schema.org",
+	"@type": "MusicGroup",
+	name: SITE_NAME,
+	url: SITE_URL,
+	genre: ["Electric blues", "Soul blues"],
+	description: bio[0],
+};
+---
+
+<Layout
+	title={`About — ${SITE_NAME}`}
+	description={bio[0]}
+	canonicalUrl={canonicalUrl}
+	structuredData={structuredData}
+	active="about"
+>
+	<div class="page">
+		<p class="eyebrow">About</p>
+		<h1 style="margin-top: var(--space-3)">{SITE_NAME}</h1>
+
+		<div
+			class="panel"
+			style="margin-top: var(--space-7); display: flex; flex-direction: column; gap: var(--space-5)"
+		>
+			{bio.map((paragraph) => <p class="lede">{paragraph}</p>)}
+		</div>
+
+		<hr class="rule" />
+
+		<section>
+			<p class="eyebrow">Contact</p>
+			<h2 style="margin-top: var(--space-3)">Bookings, press, and licensing</h2>
+			<p class="lede" style="margin-top: var(--space-4)">
+				For booking, press, licensing, collaborations, and other enquiries, use the
+				contact form.
+			</p>
+			<div class="hero-cta">
+				<a class="btn btn-secondary" href="/contact/">Get in touch</a>
+			</div>
+		</section>
+
+		{ACTIVE_SOCIALS.length > 0 && (
+			<section class="section">
+				<p class="eyebrow">Elsewhere</p>
+				<div class="hero-cta" style="margin-top: var(--space-4)">
+					{ACTIVE_SOCIALS.map((s) => (
+						<a class="btn btn-ghost" href={s.href} target="_blank" rel="noopener noreferrer">
+							{s.label}
+						</a>
+					))}
+				</div>
+			</section>
+		)}
+	</div>
+</Layout>

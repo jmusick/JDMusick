@@ -1,0 +1,104 @@
+---
+import { Image } from "astro:assets";
+import Layout from "../layouts/Layout.astro";
+import cover from "../assets/the-road-still-knows-cover.png";
+import { ALBUM, ALBUM_RUNTIME, TRACK_COUNT } from "../data/album";
+import { ACTIVE_SOCIALS, SITE_NAME, SITE_URL } from "../config/site";
+
+const canonicalUrl = `${SITE_URL}/music/`;
+
+const structuredData = {
+	"@context": "https://schema.org",
+	"@type": "MusicAlbum",
+	name: ALBUM.title,
+	url: canonicalUrl,
+	numTracks: TRACK_COUNT,
+	byArtist: { "@type": "MusicGroup", name: SITE_NAME, url: SITE_URL },
+	track: ALBUM.tracks.map((t) => ({
+		"@type": "MusicRecording",
+		position: t.n,
+		name: t.title,
+	})),
+};
+---
+
+<Layout
+	title={`Music — ${SITE_NAME}`}
+	description={`${ALBUM.title}: ${TRACK_COUNT} tracks. ${ALBUM.blurb}`}
+	canonicalUrl={canonicalUrl}
+	structuredData={structuredData}
+	active="music"
+>
+	<div class="page">
+		<p class="eyebrow">Music</p>
+		<h1 style="margin-top: var(--space-3)">{ALBUM.title}</h1>
+
+		<div class="release" style="margin-top: var(--space-7)">
+			<div class="release-art">
+				<Image src={cover} alt={`${ALBUM.title} album cover`} widths={[340, 680]} />
+			</div>
+
+			<div class="release-meta">
+				<span class="badge">{ALBUM.status}</span>
+				<p class="lede">{ALBUM.blurb}</p>
+				<div class="meta-row">
+					<span>{ALBUM.kind}</span>
+					<span>{TRACK_COUNT} tracks</span>
+					<span>{ALBUM_RUNTIME}</span>
+					<span>
+						{ALBUM.releaseDate
+							? new Date(`${ALBUM.releaseDate}T00:00:00`).toLocaleDateString("en-US", {
+									year: "numeric",
+									month: "long",
+									day: "numeric",
+								})
+							: `${ALBUM.year} · date TBA`}
+					</span>
+				</div>
+
+				{ACTIVE_SOCIALS.length > 0 ? (
+					<div class="hero-cta">
+						{ACTIVE_SOCIALS.map((s) => (
+							<a class="btn btn-secondary" href={s.href} target="_blank" rel="noopener noreferrer">
+								{s.label}
+							</a>
+						))}
+					</div>
+				) : (
+					<p style="color: var(--ink-3)">
+						Streaming links go live with the record.
+					</p>
+				)}
+			</div>
+		</div>
+
+		<hr class="rule" />
+
+		<section>
+			<p class="eyebrow">Tracklist</p>
+			<ol class="tracklist" style="margin-top: var(--space-5)">
+				{ALBUM.tracks.map((track) => (
+					<li class="track">
+						<span class="track-n">{String(track.n).padStart(2, "0")}</span>
+						<span>
+							<span class="track-title">{track.title}</span>
+							<span class="track-note">{track.note}</span>
+						</span>
+						<span class="track-time">{track.duration}</span>
+					</li>
+				))}
+			</ol>
+		</section>
+	</div>
+</Layout>
+
+<style>
+	.release-meta .badge {
+		align-self: flex-start;
+	}
+
+	.track-title {
+		font-family: var(--font-display);
+		font-size: 1rem;
+	}
+</style>
